@@ -8,12 +8,20 @@
   <body>
     <div class="login-box">
       <h1>AquaTeck Base</h1>
-      <p>Voer uw toegangscode in</p>
+      <div>
+        <p>Stel uw toegangscode in</p>
+        <input type="password" id="newCode" placeholder="Nieuwe code">
+        <button onclick="setCode()">Opslaan</button>
+      </div>
 
-      <input type="password" id="codeInput" placeholder="Code">
-      <button onclick="checkCode()">Toegang</button>
+      <div id="login" style="display:none;">
+        <p>Voer uw toegangscode in</p>
 
-      <p id="error" class"error"></p>
+        <input type="password" id="codeInput" placeholder="Code">
+        <button onclick="checkCode()">Toegang</button>
+
+        <p id="error" class"error"></p>
+      </div>
     </div>
 
     <script src="app.js"></script>
