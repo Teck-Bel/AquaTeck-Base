@@ -1,22 +1,28 @@
 window.onload = function () {
-  const hasCode = localStorage.getItem("ACCESS_CODE");
-
   const setupDiv = document.getElementById("setup");
   const loginDiv = document.getElementById("login");
 
-  if (setupDiv && loginDiv) {
-    if (!hasCode) {
-      setupDiv.style.display = "block";
-      loginDiv.style.display = "none";
-    } else {
-      setupDiv.style.display = "none";
-      loginDiv.style.display = "block";
-    }
+  if (!setupDiv || !loginDiv) return;
+
+  const hasCode = localStorage.getItem("ACCESS_CODE");
+
+  if (!hasCode) {
+    setupDiv.style.display = "block";
+    loginDiv.style.display = "none";
+  } else {
+    setupDiv.style.display = "none";
+    loginDiv.style.display = "block";
   }
 };
 
 function setCode() {
-  const newCode = document.getElementById("newCode").value;
+  const newCodeInput = document.getElementById("newCode");
+  const setupDiv = document.getElementById("setup");
+  const loginDiv = document.getElementById("login");
+
+  if (!newCodeInput) return;
+
+  const newCode = newCodeInput.value;
 
   if (!newCode || newCode.length < 4) {
     alert("Code moet minstens 4 tekens zijn");
@@ -26,8 +32,10 @@ function setCode() {
   localStorage.setItem("ACCESS_CODE", newCode);
   alert("Toegangscode opgeslagen");
 
-  document.getElementById("setup").style.display = "none";
-  document.getElementById("login").style.display = "block";
+  if (setupDiv && loginDiv) {
+    setupDiv.style.display = "none";
+    loginDiv.style.display = "block";
+  }
 }
 
 function checkCode() {
