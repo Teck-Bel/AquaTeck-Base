@@ -1,29 +1,31 @@
 <!DOCTYPE html>
 <html lang="nl">
-  <head>
-    <meta charset="UTF-8">
-    <title>AquaTeck Base - Toegang</title>
-    <link rel="stylesheet" href="style.css">
-  </head>
-  <body>
-    <div class="login-box">
-      <h1>AquaTeck Base</h1>
-      <div>
-        <p>Stel uw toegangscode in</p>
-        <input type="password" id="newCode" placeholder="Nieuwe code">
-        <button onclick="setCode()">Opslaan</button>
-      </div>
+<head>
+  <meta charset="UTF-8">
+  <title>AquaTeck Base - Toegang</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
 
-      <div id="login" style="display:none;">
-        <p>Voer uw toegangscode in</p>
+  <div class="login-box">
+    <h1>AquaTeck Base</h1>
 
-        <input type="password" id="codeInput" placeholder="Code">
-        <button onclick="checkCode()">Toegang</button>
-
-        <p id="error" class"error"></p>
-      </div>
+    <!-- Code instellen -->
+    <div id="setup">
+      <p>Stel uw toegangscode in</p>
+      <input type="password" id="newCode" placeholder="Nieuwe code">
+      <button onclick="setCode()">Opslaan</button>
     </div>
 
-    <script src="app.js"></script>
-  </body>
+    <!-- Inloggen -->
+    <div id="login" style="display:none;">
+      <p>Voer uw toegangscode in</p>
+      <input type="password" id="codeInput" placeholder="Code">
+      <button onclick="checkCode()">Toegang</button>
+      <p id="error" class="error"></p>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
 </html>
