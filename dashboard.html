@@ -3,6 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <title>AquaTeck Base – Dashboard</title>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
   <link rel="stylesheet" href="style.css">
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
@@ -25,5 +27,39 @@
 
   <script src="data.js"></script>
   <script src="app.js"></script>
+
+  <script>
+  // Firebase config
+  const firebaseConfig = {
+    apiKey: "API_KEY_HIER",
+    authDomain: "PROJECTID.firebaseapp.com",
+    databaseURL: "https://PROJECTID.firebaseio.com",
+    projectId: "PROJECTID",
+  };
+
+  // Initialiseer Firebase
+  firebase.initializeApp(firebaseConfig);
+  const db = firebase.database();
+
+  // Realtime listener voor de laatste meting
+  db.ref('/metingen').limitToLast(1).on('value', snapshot => {
+    const data = snapshot.val();
+    if (data) {
+      const keys = Object.keys(data);
+      const laatste = data[keys[keys.length - 1]];
+
+      // Vul de spans in dashboard.html
+      document.getElementById('location').textContent = laatste.locatie;
+      document.getElementById('vhf').textContent = laatste.kanaal;
+      document.getElementById('logSpeed').textContent = laatste.snelheid;
+
+      // Je kunt andere spans vullen als je meer data hebt
+      // document.getElementById('gpsSpeed').textContent = ...;
+      // document.getElementById('battery').textContent = ...;
+      // document.getElementById('charger').textContent = ...;
+    }
+  });
+</script>
+
 </body>
 </html>
