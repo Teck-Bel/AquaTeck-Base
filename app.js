@@ -1,22 +1,3 @@
-/* ===== AUTHENTICATIE ===== */
-
-window.onload = function () {
-  const setupDiv = document.getElementById("setup");
-  const loginDiv = document.getElementById("login");
-
-  if (!setupDiv || !loginDiv) return;
-
-  const hasCode = localStorage.getItem("ACCESS_CODE");
-
-  if (!hasCode) {
-    setupDiv.style.display = "block";
-    loginDiv.style.display = "none";
-  } else {
-    setupDiv.style.display = "none";
-    loginDiv.style.display = "block";
-  }
-};
-
 function setCode() {
   const newCodeInput = document.getElementById("newCode");
   const setupDiv = document.getElementById("setup");
