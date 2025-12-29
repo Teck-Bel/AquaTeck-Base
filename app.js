@@ -1,3 +1,5 @@
+/* ===== AUTHENTICATIE ===== */
+
 window.onload = function () {
   const setupDiv = document.getElementById("setup");
   const loginDiv = document.getElementById("login");
@@ -60,62 +62,59 @@ function logout() {
 let map;
 let marker;
 
+/* ===== FIREBASE CONFIGURATIE ===== */
+const firebaseConfig = {
+  apiKey: "AIzaSyDngxA1a8VqzCPATS-8KD3BQxdHqQ3ulFc",
+  authDomain: "base-d7d9f.firebaseapp.com",
+  databaseURL: "https://base-d7d9f-default-rtdb.europe-west1.firebasedatabase.app",
+  projectId: "base-d7d9f",
+  storageBucket: "base-d7d9f.firebasestorage.app",
+  messagingSenderId: "923720459274",
+  appId: "1:923720459274:web:d87698788e8915450c2bf3"
+};
+
+// Firebase initialiseren
+firebase.initializeApp(firebaseConfig);
+const db = firebase.database();
+
 function loadDashboard() {
   if (localStorage.getItem("authenticated") !== "true") {
     window.location.href = "index.html";
     return;
   }
 
-  // Statusvelden
-  document.getElementById("gpsSpeed").innerText = boatData.gpsSpeed;
-  document.getElementById("logSpeed").innerText = boatData.logSpeed;
-  document.getElementById("battery").innerText = boatData.battery;
-  document.getElementById("charger").innerText = boatData.charger;
-  document.getElementById("vhf").innerText = boatData.vhf;
-
-  // Locatie
-  const latlng = boatData.locationLatLng;
-  document.getElementById("location").innerText =
-    `${latlng[0].toFixed(4)}, ${latlng[1].toFixed(4)}`;
-
-  // Kaart initialiseren
-  map = L.map("map").setView(latlng, 15);
-
+  // Kaart initialiseren met default locatie
+  const defaultLatLng = [51.2194, 4.4025]; // Bijvoorbeeld Antwerpen
+  map = L.map("map").setView(defaultLatLng, 15);
   L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
     maxZoom: 19,
     attribution: "© OpenStreetMap"
   }).addTo(map);
 
-  marker = L.marker(latlng)
-    .addTo(map)
-    .bindPopup("Vaartuig")
-    .openPopup();
+  marker = L.marker(defaultLatLng).addTo(map).bindPopup("Vaartuig").openPopup();
 
-  // Start simulatie
-  simulateLiveData();
-}
+  // Firebase realtime listener
+  db.ref('/metingen').limitToLast(1).on('value', snapshot => {
+    const data = snapshot.val();
+    if (data) {
+      const keys = Object.keys(data);
+      const laatste = data[keys[keys.length - 1]];
 
-/* ===== LIVE DATA SIMULATIE ===== */
+      // Update dashboard cards
+      document.getElementById("location").innerText = laatste.locatie;
+      document.getElementById("logSpeed").innerText = laatste.snelheid;
+      document.getElementById("vhf").innerText = laatste.kanaal;
 
-function simulateLiveData() {
-  setInterval(() => {
-    // Beweging simuleren
-    boatData.locationLatLng[0] += (Math.random() - 0.5) / 5000;
-    boatData.locationLatLng[1] += (Math.random() - 0.5) / 5000;
+      // Andere velden kun je invullen als je data beschikbaar is
+      // document.getElementById("gpsSpeed").innerText = laatste.gpsSpeed;
+      // document.getElementById("battery").innerText = laatste.battery;
+      // document.getElementById("charger").innerText = laatste.charger;
 
-    // Snelheden
-    boatData.gpsSpeed = (Math.random() * 6).toFixed(1);
-    boatData.logSpeed = (Math.random() * 6).toFixed(1);
-
-    // Update scherm
-    document.getElementById("gpsSpeed").innerText = boatData.gpsSpeed;
-    document.getElementById("logSpeed").innerText = boatData.logSpeed;
-
-    const latlng = boatData.locationLatLng;
-    document.getElementById("location").innerText =
-      `${latlng[0].toFixed(4)}, ${latlng[1].toFixed(4)}`;
-
-    // Marker verplaatsen
-    marker.setLatLng(latlng);
-  }, 2000);
+      // Marker bijwerken (als je echte Lat/Lng van Arduino hebt)
+      // Bijvoorbeeld: laatste.lat, laatste.lng
+      // let latlng = [parseFloat(laatste.lat), parseFloat(laatste.lng)];
+      // marker.setLatLng(latlng);
+      // map.setView(latlng, map.getZoom());
+    }
+  });
 }
